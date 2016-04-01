@@ -9,7 +9,7 @@ namespace UnityStandardAssets.Vehicles.Ball
         [SerializeField] private bool m_UseTorque = true; // Whether or not to use torque to move the ball.
         [SerializeField] private float m_MaxAngularVelocity = 25; // The maximum velocity the ball can rotate at.
         [SerializeField] private float m_JumpPower = 2; // The force added to the ball when it jumps.
-
+        [SerializeField] private float boost = 100;
         private const float k_GroundRayLength = 1f; // The length of the ray to check if the ball is grounded.
         private Rigidbody m_Rigidbody;
 
@@ -23,17 +23,26 @@ namespace UnityStandardAssets.Vehicles.Ball
 
 
         public void Move(Vector3 moveDirection, bool jump)
-        {
+        {   
             // If using torque to rotate the ball...
             if (m_UseTorque)
             {
                 // ... add torque around the axis defined by the move direction.
-                m_Rigidbody.AddTorque(new Vector3(moveDirection.z, 0, -moveDirection.x)*m_MovePower);
+                if (Input.GetKey(KeyCode.LeftShift) && boost > 0)
+                {
+                    // Otherwise add force in the move direction.
+                    m_Rigidbody.AddForce(moveDirection * (m_MovePower * 2.5f));
+                    boost--;
+                }
+                else
+                {
+                    m_Rigidbody.AddTorque(new Vector3(moveDirection.z, 0, -moveDirection.x) * m_MovePower);
+                }
             }
             else
             {
                 // Otherwise add force in the move direction.
-                m_Rigidbody.AddForce(moveDirection*m_MovePower);
+                m_Rigidbody.AddForce(moveDirection * m_MovePower);
             }
 
             // If on the ground and jump is pressed...
@@ -43,5 +52,24 @@ namespace UnityStandardAssets.Vehicles.Ball
                 m_Rigidbody.AddForce(Vector3.up*m_JumpPower, ForceMode.Impulse);
             }
         }
+
+        //adds boost. Amount is the number to add/subtract to the tank, modifier is the operation used.
+        public void Boost(float amount, bool modifier)
+        {
+            if (modifier)
+            {
+                this.boost += amount;
+            }
+            else 
+            {
+                this.boost -= amount;
+            }
+
+            if(this.boost > 100f)
+            {
+                this.boost = 100f;
+            }
+        }
+
     }
 }
