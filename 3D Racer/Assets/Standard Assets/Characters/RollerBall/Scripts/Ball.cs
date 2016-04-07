@@ -12,13 +12,25 @@ namespace UnityStandardAssets.Vehicles.Ball
         [SerializeField] private float boost = 100;
         private const float k_GroundRayLength = 1f; // The length of the ray to check if the ball is grounded.
         private Rigidbody m_Rigidbody;
-
+        private int total = 30;
+        private int curr;
 
         private void Start()
         {
+            curr = 0;
             m_Rigidbody = GetComponent<Rigidbody>();
             // Set the maximum angular velocity.
             GetComponent<Rigidbody>().maxAngularVelocity = m_MaxAngularVelocity;
+        }
+
+        void Update()
+        {
+            if(curr > total)
+            {
+                curr = 0;
+                boost++;
+            }
+            curr++;
         }
 
 

@@ -26,6 +26,7 @@ public class CameraMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        offset = new Vector3(0, player.transform.childCount * .02f, player.transform.childCount * -.25f);
         // The standard position of the camera is the relative position of the camera from the player.
         Vector3 standardPos = player.position + relCameraPos + offset;
 
@@ -83,7 +84,7 @@ public class CameraMovement : MonoBehaviour
     void SmoothLookAt()
     {
         // Create a vector from the camera towards the player.
-        Vector3 relPlayerPosition = (player.position + offset )- transform.position;
+        Vector3 relPlayerPosition = (player.position + offset)- transform.position;
 
         // Create a rotation based on the relative position of the player being the forward vector.
         Quaternion lookAtRotation = Quaternion.LookRotation(relPlayerPosition, Vector3.up);
